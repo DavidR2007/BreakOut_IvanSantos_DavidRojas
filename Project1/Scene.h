@@ -22,6 +22,6 @@ public:
 
 	SceneIndex ChangeScene()
 	{
-		return;
+		return nextScene;
 	}
 };
