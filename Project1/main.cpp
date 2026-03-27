@@ -33,10 +33,5 @@ int main() {
         myScenes[index]->Update();
         index = myScenes[index] -> ChangeScene();
     }
-    
-    
-
-
-
     return 0;
 }
