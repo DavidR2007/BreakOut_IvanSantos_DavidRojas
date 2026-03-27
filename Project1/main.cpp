@@ -8,8 +8,13 @@
 #include "Brick.h"
 #include "Pad.h"
 #include "Ball.h"
+#include "Const.h"
+#include "Scene.h"
+#include "MenuScene.h"
+#include "GameScene.h"
 
 #define MAP_SIZE 15
+
 
 void CreateWalls(std::vector<GameObject*>& objects) {
     for (int i = 0; i < MAP_SIZE; i++) {
@@ -74,10 +79,23 @@ void Update(std::vector<GameObject*>& objects) {
 int main() {
     srand((unsigned int)time(NULL));
 
-    std::vector<GameObject*> objects;
+    Scene * myScenes[3];
+    bool isExitTime = false;
+    myScenes[Scene::MENU] = new MenuScene;
+    myScenes[Scene::GAMEPLAY] = new GameplayScene;
 
-    Start(objects);
-    Update(objects);
+    Scene::SceneIndex index = Scene::MENU;
+
+    while(!isExitTime)
+    {
+        myScenes[index]->Start();
+        myScenes[index]->Update();
+        index = myScenes[index] -> ChangeScene();
+    }
+    
+    
+
+
 
     return 0;
 }
