@@ -4,7 +4,7 @@
 
 class Scene {
 public:
-	enum SceneIndex { MENU, GAMEPLAY, RANKING };
+	enum SceneIndex { MENU, GAMEPLAY, RANKING, CREDITOS};
 protected:
 	std::vector<GameObject*> objects;
 	SceneIndex nextScene;

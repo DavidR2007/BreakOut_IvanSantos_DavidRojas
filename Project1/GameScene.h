@@ -60,9 +60,16 @@ public:
             for (int i = 0; i < objects.size(); i++) {
                 objects[i]->Update();
             }
-
             Render();
+            if (GetAsyncKeyState('2'))
+            {
+                isPlaying = false;
+                nextScene = SceneIndex::CREDITOS;
+            }
+            
         }
+
+       
     }
 
 };

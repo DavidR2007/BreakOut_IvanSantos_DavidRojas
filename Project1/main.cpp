@@ -12,6 +12,7 @@
 #include "Scene.h"
 #include "MenuScene.h"
 #include "GameScene.h"
+#include "CreditosScene.h"
 
 #define MAP_SIZE 15
 
@@ -20,10 +21,11 @@
 int main() {
     srand((unsigned int)time(NULL));
 
-    Scene * myScenes[3];
+    Scene * myScenes[4];
     bool isExitTime = false;
     myScenes[Scene::MENU] = new MenuScene;
     myScenes[Scene::GAMEPLAY] = new GameplayScene;
+    myScenes[Scene::CREDITOS] = new CreditosScene;
 
     Scene::SceneIndex index = Scene::MENU;
 
