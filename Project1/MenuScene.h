@@ -8,7 +8,7 @@ class MenuScene : public Scene {
 	{
 
 	};
-
+	int pos = 0;
 	virtual void Render() 
 	{																		
 		std::cout << " ___.                __                          __    "<< std::endl;
@@ -19,12 +19,11 @@ class MenuScene : public Scene {
 		renderMenu();
 		Sleep(200);
 		system("cls");
-		std::cout << std::endl;
-		std::cout << " ___.                __                          __    " << std::endl;
-		std::cout << " |  |________ ______ |  | __ ____  ____  __ ____/  |_  " << std::endl;
-		std::cout << " | __ |_  __  |__  | |  |/ // __ |/  _ ||  |  |_   __| " << std::endl;
-		std::cout << " | |_| |  | |// __ | |    < | ___(  <_> )  |  / |  |   " << std::endl;
-		std::cout << " |___  |__|  (____ ) |__|_ ||___> <____/|____/  |__|   " << std::endl;
+		std::cout << "      ___.                __                          __    " << std::endl;
+		std::cout << "      |  |________ ______ |  | __ ____  ____  __ ____/  |_  " << std::endl;
+		std::cout << "      | __ |_  __  |__  | |  |/ // __ |/  _ ||  |  |_   __| " << std::endl;
+		std::cout << "      | |_| |  | |// __ | |    < | ___(  <_> )  |  / |  |   " << std::endl;
+		std::cout << "      |___  |__|  (____ ) |__|_ ||___> <____/|____/  |__|   " << std::endl;
 		renderMenu();
 		Sleep(200);
 		system("cls");
@@ -33,6 +32,7 @@ class MenuScene : public Scene {
 	virtual void Update() 
 	{
 		bool exitScene = false;
+		
 		while (!exitScene) {
 			Sleep(100);
 
@@ -40,25 +40,80 @@ class MenuScene : public Scene {
 				objects[i]->Update();
 			}
 
-			if (GetAsyncKeyState('W'))
-			{
-
-			}
 			if (GetAsyncKeyState('S'))
 			{
-
+				if (pos >= 2)
+				{
+					pos = 0;
+				}
+				else
+				{
+					pos++;
+				}
 			}
-
+			if (GetAsyncKeyState('W'))
+			{
+				if (pos <= 0)
+				{
+					pos = 2;
+				}
+				else
+				{
+					pos--;
+				}
+			}
+			if (GetAsyncKeyState('E'))
+			{
+				switch (pos)
+				{
+				case 0:
+					nextScene = SceneIndex::GAMEPLAY;
+					break;
+				case 1:
+					nextScene = SceneIndex::CREDITOS;
+					break;
+				case 2:
+					exit(0);
+					break;
+				default:
+					break;
+				}
+				exitScene = true;
+			}
 			Render();
 			
 		}
 		
-		nextScene = SceneIndex::GAMEPLAY;
+		
 
 	};
 	virtual void renderMenu() {
-		std::cout << "Play " << std::endl;
-		std::cout << std::endl;
-		std::cout << "Out " << std::endl;
+		switch (pos)
+		{
+		case 0:
+			std::cout << "\033[32m" << "> PLAY <" << "\033[0m" << std::endl;
+			std::cout << std::endl;
+			std::cout << "  credits" << std::endl;
+			std::cout << std::endl;
+			std::cout << "  out" << std::endl;
+			break;
+		case 1:
+			std::cout << "  play " << std::endl;
+			std::cout << std::endl;
+			std::cout << "\033[32m" << "> CREDITS <" << "\033[0m" << std::endl;
+			std::cout << std::endl;
+			std::cout << "  out" << std::endl;
+			break;
+		case 2:
+			std::cout << "  play " << std::endl;
+			std::cout << std::endl;
+			std::cout  << "  credits"  << std::endl;
+			std::cout << std::endl;
+			std::cout << "\033[31m" << "> OUT <" << "\033[0m" <<  std::endl;
+			break;
+		default:
+			break;
+		}
+		
 	}
 };
