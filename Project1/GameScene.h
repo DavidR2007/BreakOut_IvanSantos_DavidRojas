@@ -1,7 +1,10 @@
 #pragma once
 #include "Scene.h"
+#include "FileManager.h"
 
 class GameplayScene : public Scene {
+    int score;
+    
 
 
 public:
@@ -66,6 +69,11 @@ public:
                 isPlaying = false;
                 nextScene = SceneIndex::CREDITOS;
             }
+
+            RankingInfo actualMatch;
+			actualMatch.score = score;
+			actualMatch.name = "Player";
+			FileManager::SaveScore(actualMatch);
             
         }
 

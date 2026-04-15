@@ -139,6 +139,7 @@
     <ClInclude Include="ConsoleControl.h" />
     <ClInclude Include="Const.h" />
     <ClInclude Include="CreditosScene.h" />
+    <ClInclude Include="FileManager.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="MenuScene.h" />
