@@ -5,10 +5,9 @@
 class GameObject {
 protected:
     Vector2 position;
-    char charToPrint;
-    ConsoleColor color;
-
 public:
+    ConsoleColor color;
+    char charToPrint;
     GameObject(Vector2 newPosition, char newChar, ConsoleColor newColor) {
         position = newPosition;
         charToPrint = newChar;

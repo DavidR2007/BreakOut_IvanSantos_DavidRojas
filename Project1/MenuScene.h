@@ -9,26 +9,43 @@ class MenuScene : public Scene {
 
 	};
 	int pos = 0;
+	int i = 0;
 	virtual void Render() 
 	{																		
-		std::cout << " ___.                __                          __    "<< std::endl;
-		std::cout << " |  |________ ______ |  | __ ____  ____  __ ____/  |_  "<< std::endl;
-		std::cout << " | __ |_  __  |__  | |  |/ // __ |/  _ ||  |  |_   __| "<< std::endl;
-		std::cout << " | |_| |  | |// __ | |    < | ___(  <_> )  |  / |  |   "<< std::endl;
-		std::cout << " |___  |__|  (____ ) |__|_ ||___> <____/|____/  |__|   "<< std::endl;
-		renderMenu();
-		Sleep(200);
-		system("cls");
-		std::cout << "      ___.                __                          __    " << std::endl;
-		std::cout << "      |  |________ ______ |  | __ ____  ____  __ ____/  |_  " << std::endl;
-		std::cout << "      | __ |_  __  |__  | |  |/ // __ |/  _ ||  |  |_   __| " << std::endl;
-		std::cout << "      | |_| |  | |// __ | |    < | ___(  <_> )  |  / |  |   " << std::endl;
-		std::cout << "      |___  |__|  (____ ) |__|_ ||___> <____/|____/  |__|   " << std::endl;
-		renderMenu();
-		Sleep(200);
-		system("cls");
+		i++;
+		render();
 	};
-				   
+	
+	void render() {
+		switch (i)
+		{
+		case 1:
+			std::cout << " ___.                __                          __    " << std::endl;
+			std::cout << " |  |________ ______ |  | __ ____  ____  __ ____/  |_  " << std::endl;
+			std::cout << " | __ |_  __  |__  | |  |/ // __ |/  _ ||  |  |_   __| " << std::endl;
+			std::cout << " | |_| |  | |// __ | |    < | ___(  <_> )  |  / |  |   " << std::endl;
+			std::cout << " |___  |__|  (____ ) |__|_ ||___> <____/|____/  |__|   " << std::endl;
+			renderMenu();
+			Sleep(100);
+			system("cls");
+			break;
+		case 2:
+			std::cout << "      ___.                __                          __    " << std::endl;
+			std::cout << "      |  |________ ______ |  | __ ____  ____  __ ____/  |_  " << std::endl;
+			std::cout << "      | __ |_  __  |__  | |  |/ // __ |/  _ ||  |  |_   __| " << std::endl;
+			std::cout << "      | |_| |  | |// __ | |    < | ___(  <_> )  |  / |  |   " << std::endl;
+			std::cout << "      |___  |__|  (____ ) |__|_ ||___> <____/|____/  |__|   " << std::endl;
+			renderMenu();
+			Sleep(100);
+			system("cls");
+			break;
+		default:
+			i = 0;
+			break;
+		}
+	}
+
+
 	virtual void Update() 
 	{
 		bool exitScene = false;

@@ -57,9 +57,21 @@ void Ball::Update() {
             continue;
         }
 
-        if (IsCollidingWith(currentObject)) {
+        if (IsCollidingWith(currentObject)) 
+        {   
+            if (currentObject->charToPrint == '=')
+            {
+                Brick* brick = dynamic_cast<Brick*>(currentObject);
+                brick->destroyed = true;
+                objects->erase(objects->begin() + i);
+            }
+            if (currentObject->color == RED)
+            {
+                break;
+            }
             Bounce(currentObject);
             break;
         }
+       
     }
 }
