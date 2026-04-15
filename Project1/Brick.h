@@ -2,9 +2,8 @@
 #include "GameObject.h"
 
 class Brick : public GameObject {
-protected:
-	bool destroyed;
 public:
+	bool destroyed;
 	Brick(Vector2 _pos, ConsoleColor c)
 		: GameObject(_pos, '=', c), destroyed(false) {}
 	inline bool GetDestroyed() const { return destroyed; }
