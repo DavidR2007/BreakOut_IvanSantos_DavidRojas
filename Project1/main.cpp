@@ -12,6 +12,7 @@
 #include "Scene.h"
 #include "MenuScene.h"
 #include "GameScene.h"
+#include "RankingScene.h"
 #include "CreditosScene.h"
 
 #define MAP_SIZE 15
@@ -25,6 +26,7 @@ int main() {
     bool isExitTime = false;
     myScenes[Scene::MENU] = new MenuScene;
     myScenes[Scene::GAMEPLAY] = new GameplayScene;
+    myScenes[Scene::RANKING] = new RankingScene;
     myScenes[Scene::CREDITOS] = new CreditosScene;
 
     Scene::SceneIndex index = Scene::MENU;

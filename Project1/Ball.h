@@ -12,14 +12,28 @@ private:
     std::vector<GameObject*>* objects;
 
     bool IsCollidingWith(GameObject* other);
-    bool HasObjectAtPosition(int x, int y);
-    void Bounce(GameObject* other);
+
 
 public:
+    bool isDead;
+    bool isStuck;
+    Pad* attachedPad;
+    int scoreGained;
+
     Ball(Vector2 newPosition, ConsoleColor newColor, std::vector<GameObject*>& gameObjects)
-        : GameObject(newPosition, '@', newColor) {
-        direction = Vector2(1, 1);
+        : GameObject(newPosition, '@', newColor), isDead(false), isStuck(true), attachedPad(nullptr), scoreGained(0) {
+        direction = Vector2(1, -1);
         objects = &gameObjects;
+    }
+
+    void AttachToPad(Pad* pad) {
+        attachedPad = pad;
+        isStuck = true;
+    }
+
+    void Release() {
+        isStuck = false;
+        direction = Vector2(1, -1);
     }
 
     void Update() override;

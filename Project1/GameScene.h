@@ -4,10 +4,18 @@
 
 class GameplayScene : public Scene {
     int score;
-    
-
+    int lives;
+    Pad* myPad;
+    Ball* myBall;
 
 public:
+    GameplayScene() {
+        score = 0;
+        lives = 3;
+        myPad = nullptr;
+        myBall = nullptr;
+    }
+
     void CreateWalls() {
         for (int i = 0; i < MAP_SIZE; i++) {
             objects.push_back(new Wall(Vector2(i, 0), YELLOW, false));
@@ -29,21 +37,32 @@ public:
     }
 
     void CreatePlayer() {
-        objects.push_back(new Pad(Vector2(MAP_SIZE / 2, (MAP_SIZE * 3) / 4), WHITE, 1, MAP_SIZE));
+        myPad = new Pad(Vector2(MAP_SIZE / 2, (MAP_SIZE * 3) / 4), WHITE, 2, MAP_SIZE); // Pala un poco más ancha
+        objects.push_back(myPad);
     }
 
     void CreateBall() {
-        objects.push_back(new Ball(Vector2(2, MAP_SIZE / 2), WHITE, objects));
+        myBall = new Ball(Vector2(2, MAP_SIZE / 2), WHITE, objects);
+        myBall->AttachToPad(myPad);
+        objects.push_back(myBall);
     }
 
-    void Start() override{
+    void Start() override {
+        for (GameObject* obj : objects) {
+            delete obj;
+        }
+        objects.clear();
+
+        score = 0;
+        lives = 3;
+
         CreateWalls();
         CreateBricks();
         CreatePlayer();
         CreateBall();
     }
 
-    void Render() override{
+    void Render() override {
         system("cls");
         ConsoleSetColor(WHITE, BLACK);
 
@@ -51,33 +70,79 @@ public:
             objects[i]->Render();
         }
 
+        ConsoleXY(1, MAP_SIZE + 1);
+        std::cout << "Vidas: " << lives << "   Puntos: " << score;
+        if (myBall && myBall->isStuck) {
+            ConsoleXY(1, MAP_SIZE + 2);
+            std::cout << "Presiona ESPACIO para lanzar!";
+        }
+
         ConsoleXY(MAP_SIZE, MAP_SIZE);
     }
 
-    void Update() override{
+    void Update() override {
         bool isPlaying = true;
 
         while (isPlaying) {
-            Sleep(100);
+            // El limite de delay baja a 80ms para que la respuesta de movimiento en consola se sienta fluida.
+            Sleep(80); 
 
             for (int i = 0; i < objects.size(); i++) {
                 objects[i]->Update();
             }
-            Render();
-            if (GetAsyncKeyState('2'))
-            {
-                isPlaying = false;
-                nextScene = SceneIndex::CREDITOS;
+
+
+            if (myBall && myBall->scoreGained > 0) {
+                score += myBall->scoreGained;
+                myBall->scoreGained = 0;
             }
 
-            RankingInfo actualMatch;
-			actualMatch.score = score;
-			actualMatch.name = "Player";
-			FileManager::SaveScore(actualMatch);
-            
-        }
+            Render();
 
-       
+            if (myBall->isDead) { // Si la bola toca fondo
+                lives--;
+                if (lives > 0) {
+                    myBall->isDead = false;
+                    myBall->AttachToPad(myPad);
+                }
+                else {
+                    isPlaying = false;
+                }
+            }
+
+            // Comprobar si quedan ladrillos
+            bool hasBricks = false;
+            for (int i = 0; i < objects.size(); i++) {
+                if (objects[i]->charToPrint == '=') {
+                    hasBricks = true;
+                    break;
+                }
+            }
+
+            if (!hasBricks) { 
+                isPlaying = false;
+            }
+        } // Fin del bucle jugable
+
+        // --- FIN DE PARTIDA ---
+        system("cls");
+        ConsoleSetColor(YELLOW, BLACK);
+        std::cout << "\n\n   --- FIN DE LA PARTIDA ---\n" << std::endl;
+        ConsoleSetColor(WHITE, BLACK);
+        std::cout << "   Puntos obtenidos: " << score << std::endl;
+        std::cout << "   Introduce tu alias (sin espacios): ";
+        
+        std::string nombre;
+        std::cin >> nombre;
+
+        // Guardar progreso en el fichero
+        RankingInfo actualMatch;
+        actualMatch.score = score;
+        actualMatch.name = nombre;
+        FileManager::SaveScore(actualMatch);
+
+        // Ir al tablero de record
+        nextScene = SceneIndex::RANKING;
     }
 
 };

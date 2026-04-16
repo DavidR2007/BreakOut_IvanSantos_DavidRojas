@@ -11,11 +11,11 @@ public:
 		: x(_x), y(_y) {}
 
 	//Operators
-	inline Vector2 operator+(const Vector2& other) {
+	inline Vector2 operator+(const Vector2& other) const {
 		return Vector2(x + other.x, y + other.y);
 	}
 
-	inline bool operator==(const Vector2& other) {
+	inline bool operator==(const Vector2& other) const {
 		return x == other.x && y == other.y;
 	}
 

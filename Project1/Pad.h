@@ -18,6 +18,12 @@ public:
         return width;
     }
 
+    bool IsAtPosition(Vector2 target) const override {
+        if (target.y != position.y) return false;
+        if (target.x >= position.x - width && target.x <= position.x + width) return true;
+        return false;
+    }
+
     void Update() override;
     void Render() override;
 };

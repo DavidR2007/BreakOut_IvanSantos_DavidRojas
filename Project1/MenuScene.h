@@ -1,83 +1,56 @@
-﻿#pragma once
+#pragma once
 #include <windows.h>
 #include "Scene.h"
 
 
 class MenuScene : public Scene {
-	virtual void Start() 
-	{
-
-	};
 	int pos = 0;
-	int i = 0;
-	virtual void Render() 
-	{																		
-		i++;
-		render();
-	};
-	
-	void render() {
-		switch (i)
-		{
-		case 1:
-			std::cout << " ___.                __                          __    " << std::endl;
-			std::cout << " |  |________ ______ |  | __ ____  ____  __ ____/  |_  " << std::endl;
-			std::cout << " | __ |_  __  |__  | |  |/ // __ |/  _ ||  |  |_   __| " << std::endl;
-			std::cout << " | |_| |  | |// __ | |    < | ___(  <_> )  |  / |  |   " << std::endl;
-			std::cout << " |___  |__|  (____ ) |__|_ ||___> <____/|____/  |__|   " << std::endl;
-			renderMenu();
-			Sleep(100);
-			system("cls");
-			break;
-		case 2:
-			std::cout << "      ___.                __                          __    " << std::endl;
-			std::cout << "      |  |________ ______ |  | __ ____  ____  __ ____/  |_  " << std::endl;
-			std::cout << "      | __ |_  __  |__  | |  |/ // __ |/  _ ||  |  |_   __| " << std::endl;
-			std::cout << "      | |_| |  | |// __ | |    < | ___(  <_> )  |  / |  |   " << std::endl;
-			std::cout << "      |___  |__|  (____ ) |__|_ ||___> <____/|____/  |__|   " << std::endl;
-			renderMenu();
-			Sleep(100);
-			system("cls");
-			break;
-		default:
-			i = 0;
-			break;
-		}
+	int frame = 0;
+
+public:
+	virtual void Start() override
+	{
+		pos = 0;
+		frame = 0;
 	}
 
+	virtual void Render() override
+	{
+		system("cls");
 
-	virtual void Update() 
+		// Logo de Breakout Centrado
+		ConsoleSetColor(CYAN, BLACK);
+		std::cout << "\n\n";
+		std::cout << "      ____  _____  ______ ___   _  __ ____  _   _  _____\n";
+		std::cout << "     | __ )|  __ \\|  ____/ _ \\ | |/ // __ \\| | | ||_   _|\n";
+		std::cout << "     |  _ \\| |__) | |__ / /_\\ \\| ' /| |  | | | | |  | |  \n";
+		std::cout << "     | |_) |  _  /|  __| _   _ | . \\| |__| | |_| |  | |  \n";
+		std::cout << "     |____/|_| \\_\\|____/_/   \\_\\_|\\_\\\\____/ \\___/   |_|  \n";
+		std::cout << "\n\n\n\n";
+
+		renderMenu();
+	}
+
+	virtual void Update() override
 	{
 		bool exitScene = false;
 		
 		while (!exitScene) {
-			Sleep(100);
-
-			for (int i = 0; i < objects.size(); i++) {
-				objects[i]->Update();
-			}
+			// Para evitar el parpadeo de pantalla constante al hacer cls,
+			// debemos renderizar PRIMERO. Asi la consola dibuja la interfaz y el Sleep la mantiene estatica a la vista.
+			Render(); 
+			
+			Sleep(150); // Leve aumento del delay para dar tiempo a soltar la tecla
 
 			if (GetAsyncKeyState('S'))
 			{
-				if (pos >= 2)
-				{
-					pos = 0;
-				}
-				else
-				{
-					pos++;
-				}
+				pos++;
+				if (pos > 3) pos = 0;
 			}
 			if (GetAsyncKeyState('W'))
 			{
-				if (pos <= 0)
-				{
-					pos = 2;
-				}
-				else
-				{
-					pos--;
-				}
+				pos--;
+				if (pos < 0) pos = 3;
 			}
 			if (GetAsyncKeyState('E'))
 			{
@@ -87,50 +60,57 @@ class MenuScene : public Scene {
 					nextScene = SceneIndex::GAMEPLAY;
 					break;
 				case 1:
-					nextScene = SceneIndex::CREDITOS;
+					nextScene = SceneIndex::RANKING;
 					break;
 				case 2:
-					exit(0);
+					nextScene = SceneIndex::CREDITOS;
 					break;
-				default:
+				case 3:
+					exit(0);
 					break;
 				}
 				exitScene = true;
 			}
-			Render();
-			
 		}
-		
-		
+	}
 
-	};
 	virtual void renderMenu() {
-		switch (pos)
-		{
-		case 0:
-			std::cout << "\033[32m" << "> PLAY <" << "\033[0m" << std::endl;
-			std::cout << std::endl;
-			std::cout << "  credits" << std::endl;
-			std::cout << std::endl;
-			std::cout << "  out" << std::endl;
-			break;
-		case 1:
-			std::cout << "  play " << std::endl;
-			std::cout << std::endl;
-			std::cout << "\033[32m" << "> CREDITS <" << "\033[0m" << std::endl;
-			std::cout << std::endl;
-			std::cout << "  out" << std::endl;
-			break;
-		case 2:
-			std::cout << "  play " << std::endl;
-			std::cout << std::endl;
-			std::cout  << "  credits"  << std::endl;
-			std::cout << std::endl;
-			std::cout << "\033[31m" << "> OUT <" << "\033[0m" <<  std::endl;
-			break;
-		default:
-			break;
+		ConsoleSetColor(WHITE, BLACK);
+		std::cout << "              Use W / S para mover\n";
+		std::cout << "               Use E para confirmar\n\n\n";
+		
+		if (pos == 0) {
+			ConsoleSetColor(GREEN, BLACK);
+			std::cout << "                  >> JUGAR <<\n\n";
+		} else {
+			ConsoleSetColor(WHITE, BLACK);
+			std::cout << "                     Jugar\n\n";
+		}
+
+		if (pos == 1) {
+			ConsoleSetColor(YELLOW, BLACK);
+			std::cout << "                 >> RANKING <<\n\n";
+		} else {
+			ConsoleSetColor(WHITE, BLACK);
+			std::cout << "                    Ranking\n\n";
+		}
+
+		if (pos == 2) {
+			ConsoleSetColor(CYAN, BLACK);
+			std::cout << "                 >> CREDITOS <<\n\n";
+		} else {
+			ConsoleSetColor(WHITE, BLACK);
+			std::cout << "                    Creditos\n\n";
+		}
+
+		if (pos == 3) {
+			ConsoleSetColor(RED, BLACK);
+			std::cout << "                  >> SALIR <<\n\n";
+		} else {
+			ConsoleSetColor(WHITE, BLACK);
+			std::cout << "                     Salir\n\n";
 		}
 		
+		ConsoleSetColor(WHITE, BLACK); // Resetear color
 	}
 };

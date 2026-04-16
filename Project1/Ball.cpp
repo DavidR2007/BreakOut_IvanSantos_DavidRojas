@@ -1,77 +1,95 @@
 #include "Ball.h"
 
 bool Ball::IsCollidingWith(GameObject* other) {
-    return position == other->GetPosition();
-}
-
-bool Ball::HasObjectAtPosition(int x, int y) {
-    Vector2 targetPosition(x, y);
-
-    for (int i = 0; i < objects->size(); i++) {
-        if ((*objects)[i] == this) {
-            continue;
-        }
-
-        if ((*objects)[i]->GetPosition() == targetPosition) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-void Ball::Bounce(GameObject* other) {
-    Vector2 otherPosition = other->GetPosition();
-
-    bool hasObjectAbove = HasObjectAtPosition(otherPosition.x, otherPosition.y - 1);
-    bool hasObjectBelow = HasObjectAtPosition(otherPosition.x, otherPosition.y + 1);
-    bool hasObjectLeft = HasObjectAtPosition(otherPosition.x - 1, otherPosition.y);
-    bool hasObjectRight = HasObjectAtPosition(otherPosition.x + 1, otherPosition.y);
-
-    bool bounceHorizontal = hasObjectAbove || hasObjectBelow;
-    bool bounceVertical = hasObjectLeft || hasObjectRight;
-
-    if (!bounceHorizontal && !bounceVertical) {
-        direction.x = -direction.x;
-        direction.y = -direction.y;
-        return;
-    }
-
-    if (bounceVertical) {
-        direction.y = -direction.y;
-    }
-
-    if (bounceHorizontal) {
-        direction.x = -direction.x;
-    }
+    return other->IsAtPosition(position);
 }
 
 void Ball::Update() {
-    position.x = position.x + direction.x;
-    position.y = position.y + direction.y;
-
-    for (int i = 0; i < objects->size(); i++) {
-        GameObject* currentObject = (*objects)[i];
-
-        if (currentObject == this) {
-            continue;
+    if (isStuck) {
+        if (attachedPad != nullptr) {
+            position.x = attachedPad->GetPosition().x;
+            position.y = attachedPad->GetPosition().y - 1;
         }
+        if (GetAsyncKeyState(VK_SPACE) != 0) {
+            Release();
 
-        if (IsCollidingWith(currentObject)) 
-        {   
-            if (currentObject->charToPrint == '=')
-            {
-                Brick* brick = dynamic_cast<Brick*>(currentObject);
-                brick->destroyed = true;
-                objects->erase(objects->begin() + i);
-            }
-            if (currentObject->color == RED)
-            {
+            // Aseguramos salir diagonalmente para empezar bien, sino puede haber un bucle infinito
+            direction.x = 1;
+            direction.y = -1;
+        }
+        return;
+    }
+
+
+    if (direction.x != 0) {
+        position.x += direction.x;
+        for (int i = 0; i < objects->size(); i++) {
+            GameObject* currentObject = (*objects)[i];
+            if (currentObject == this) continue;
+
+            if (IsCollidingWith(currentObject)) {
+                if (currentObject->color == RED) {
+                    isDead = true; break;
+                }
+                bool isPad = (currentObject->charToPrint == '_');
+
+                if (currentObject->charToPrint == '=') {
+                    Brick* brick = dynamic_cast<Brick*>(currentObject);
+                    if (brick) { brick->destroyed = true; scoreGained += 10; }
+                    delete currentObject;
+                    objects->erase(objects->begin() + i);
+                    i--;
+                }
+
+
+                if (!isPad) {
+                    position.x -= direction.x;
+                    direction.x = -direction.x;
+                }
                 break;
             }
-            Bounce(currentObject);
-            break;
         }
-       
+    }
+
+    if (direction.y != 0 && !isDead) {
+        position.y += direction.y;
+        for (int i = 0; i < objects->size(); i++) {
+            GameObject* currentObject = (*objects)[i];
+            if (currentObject == this) continue;
+
+            if (IsCollidingWith(currentObject)) {
+                if (currentObject->color == RED) {
+                    isDead = true; break;
+                }
+
+                if (currentObject->charToPrint == '=') {
+                    Brick* brick = dynamic_cast<Brick*>(currentObject);
+                    if (brick) { brick->destroyed = true; scoreGained += 10; }
+                    delete currentObject;
+                    objects->erase(objects->begin() + i);
+                    i--;
+                }
+                else if (currentObject->charToPrint == '_') // Pad
+                {
+                    position.y -= direction.y;
+                    direction.y = -abs(direction.y);
+
+                    if (attachedPad != nullptr) {
+                        int padCentro = attachedPad->GetPosition().x;
+                        if (position.x < padCentro) direction.x = -1;
+                        else if (position.x > padCentro) direction.x = 1;
+                        else direction.x = 0;
+                    }
+                    break;
+                }
+
+
+                if (currentObject->charToPrint != '_') {
+                    position.y -= direction.y;
+                    direction.y = -direction.y;
+                }
+                break;
+            }
+        }
     }
 }

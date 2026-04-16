@@ -14,8 +14,14 @@ public:
         color = newColor;
     }
 
+    virtual ~GameObject() = default;
+
     Vector2 GetPosition() const {
         return position;
+    }
+
+    virtual bool IsAtPosition(Vector2 target) const {
+        return position == target;
     }
 
     char GetCharToPrint() const {
