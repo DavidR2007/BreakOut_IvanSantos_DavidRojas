@@ -37,7 +37,7 @@ public:
     }
 
     void CreatePlayer() {
-        myPad = new Pad(Vector2(MAP_SIZE / 2, (MAP_SIZE * 3) / 4), WHITE, 2, MAP_SIZE); // Pala un poco más ancha
+        myPad = new Pad(Vector2(MAP_SIZE / 2, (MAP_SIZE * 3) / 4), WHITE, 2, MAP_SIZE); // Pala un poco más ancha, me daba problemas el hehco de que fueran solo 3
         objects.push_back(myPad);
     }
 
@@ -84,7 +84,7 @@ public:
         bool isPlaying = true;
 
         while (isPlaying) {
-            // El limite de delay baja a 80ms para que la respuesta de movimiento en consola se sienta fluida.
+            // Lo he dejado en 80 se ve mejor que ha 100
             Sleep(80); 
 
             for (int i = 0; i < objects.size(); i++) {
@@ -98,8 +98,8 @@ public:
             }
 
             Render();
-
-            if (myBall->isDead) { // Si la bola toca fondo
+// Aqui detecta si toca el fondo rojo y resta vidas, si no quedan vidas, termina la partida
+            if (myBall->isDead) { 
                 lives--;
                 if (lives > 0) {
                     myBall->isDead = false;
@@ -110,7 +110,7 @@ public:
                 }
             }
 
-            // Comprobar si quedan ladrillos
+            // Condicion de victoria: no quedan ladrillos en el mapa (si no quedan ladrillos, el jugador ha ganado y se termina la partida)
             bool hasBricks = false;
             for (int i = 0; i < objects.size(); i++) {
                 if (objects[i]->charToPrint == '=') {
@@ -122,9 +122,9 @@ public:
             if (!hasBricks) { 
                 isPlaying = false;
             }
-        } // Fin del bucle jugable
+        } 
 
-        // --- FIN DE PARTIDA ---
+
         system("cls");
         ConsoleSetColor(YELLOW, BLACK);
         std::cout << "\n\n   --- FIN DE LA PARTIDA ---\n" << std::endl;
@@ -135,13 +135,13 @@ public:
         std::string nombre;
         std::cin >> nombre;
 
-        // Guardar progreso en el fichero
+        // Guardar 
         RankingInfo actualMatch;
         actualMatch.score = score;
         actualMatch.name = nombre;
         FileManager::SaveScore(actualMatch);
 
-        // Ir al tablero de record
+        // Ir a ranking
         nextScene = SceneIndex::RANKING;
     }
 

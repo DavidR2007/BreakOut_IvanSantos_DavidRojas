@@ -6,7 +6,8 @@
 
 #include <vector>
 
-class Ball : public GameObject {
+class Ball : public GameObject 
+{
 private:
     Vector2 direction;
     std::vector<GameObject*>* objects;
@@ -19,21 +20,26 @@ public:
     bool isStuck;
     Pad* attachedPad;
     int scoreGained;
+    int combo;
 
     Ball(Vector2 newPosition, ConsoleColor newColor, std::vector<GameObject*>& gameObjects)
-        : GameObject(newPosition, '@', newColor), isDead(false), isStuck(true), attachedPad(nullptr), scoreGained(0) {
+        : GameObject(newPosition, '@', newColor), isDead(false), isStuck(true), attachedPad(nullptr), scoreGained(0), combo(0) 
+        {
         direction = Vector2(1, -1);
         objects = &gameObjects;
     }
 
-    void AttachToPad(Pad* pad) {
+    void AttachToPad(Pad* pad) 
+    {
         attachedPad = pad;
         isStuck = true;
     }
 
-    void Release() {
+    void Release() 
+    {
         isStuck = false;
         direction = Vector2(1, -1);
+        combo = 0;
     }
 
     void Update() override;

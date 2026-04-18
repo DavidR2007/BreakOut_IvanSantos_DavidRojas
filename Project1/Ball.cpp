@@ -13,7 +13,6 @@ void Ball::Update() {
         if (GetAsyncKeyState(VK_SPACE) != 0) {
             Release();
 
-            // Aseguramos salir diagonalmente para empezar bien, sino puede haber un bucle infinito
             direction.x = 1;
             direction.y = -1;
         }
@@ -35,7 +34,7 @@ void Ball::Update() {
 
                 if (currentObject->charToPrint == '=') {
                     Brick* brick = dynamic_cast<Brick*>(currentObject);
-                    if (brick) { brick->destroyed = true; scoreGained += 10; }
+                    if (brick) { brick->destroyed = true; scoreGained += 15 + (combo * 5); combo++; }
                     delete currentObject;
                     objects->erase(objects->begin() + i);
                     i--;
@@ -64,7 +63,7 @@ void Ball::Update() {
 
                 if (currentObject->charToPrint == '=') {
                     Brick* brick = dynamic_cast<Brick*>(currentObject);
-                    if (brick) { brick->destroyed = true; scoreGained += 10; }
+                    if (brick) { brick->destroyed = true; scoreGained += 15 + (combo * 5); combo++; }
                     delete currentObject;
                     objects->erase(objects->begin() + i);
                     i--;
@@ -80,6 +79,7 @@ void Ball::Update() {
                         else if (position.x > padCentro) direction.x = 1;
                         else direction.x = 0;
                     }
+                    combo = 0;
                     break;
                 }
 

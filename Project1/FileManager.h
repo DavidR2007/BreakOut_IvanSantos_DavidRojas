@@ -19,23 +19,27 @@ struct RankingInfo
 class FileManager {
 
 	static std::string GetSaveFileName() {
-		return "saveFile.txt";
+		return "saveFile.bin";
 	}
 
 public:
 	static std::vector<RankingInfo> LoadRanking() 
 	{
 		std::vector<RankingInfo> ranking;
-		std::ifstream file(GetSaveFileName());
+		std::ifstream file(GetSaveFileName(), std::ios::binary);
 		if (file.is_open()) {
-			std::string name;
-			unsigned int score;
-			while (file >> name >> score) {
+			while (file) {
+				size_t nameLen;
+				if (!file.read(reinterpret_cast<char*>(&nameLen), sizeof(size_t))) break;
+				std::string name(nameLen, '\0');
+				file.read(&name[0], nameLen);
+				unsigned int score;
+				file.read(reinterpret_cast<char*>(&score), sizeof(unsigned int));
 				ranking.push_back({name, score});
 			}
 			file.close();
 		}
-		std::sort(ranking.begin(), ranking.end());
+
 		return ranking;
 	}
 
@@ -43,16 +47,27 @@ public:
 	{
 		std::vector<RankingInfo> currentRanking = LoadRanking();
 		currentRanking.push_back(Info);
-		std::sort(currentRanking.begin(), currentRanking.end());
+
+		// Bubble sort
+		for (size_t i = 0; i < currentRanking.size() - 1; ++i) {
+			for (size_t j = 0; j < currentRanking.size() - i - 1; ++j) {
+				if (currentRanking[j].score < currentRanking[j + 1].score) {
+					std::swap(currentRanking[j], currentRanking[j + 1]);
+				}
+			}
+		}
 
 		if (currentRanking.size() > 5) {
 			currentRanking.resize(5);
 		}
 
-		std::ofstream file(GetSaveFileName());
+		std::ofstream file(GetSaveFileName(), std::ios::binary);
 		if (file.is_open()) {
-			for (int i = 0; i < currentRanking.size(); i++) {
-				file << currentRanking[i].name << " " << currentRanking[i].score << "\n";
+			for (const auto& entry : currentRanking) {
+				size_t nameLen = entry.name.size();
+				file.write(reinterpret_cast<const char*>(&nameLen), sizeof(size_t));
+				file.write(entry.name.c_str(), nameLen);
+				file.write(reinterpret_cast<const char*>(&entry.score), sizeof(unsigned int));
 			}
 			file.close();
 		}

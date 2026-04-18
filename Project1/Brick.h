@@ -1,7 +1,8 @@
 #pragma once
 #include "GameObject.h"
 
-class Brick : public GameObject {
+class Brick : public GameObject 
+{
 public:
 	bool destroyed;
 	Brick(Vector2 _pos, ConsoleColor c)
@@ -9,8 +10,10 @@ public:
 	inline bool GetDestroyed() const { return destroyed; }
 	inline void Destroy() { destroyed = true; }
 
-	void Render() override {
-		if (!destroyed) {
+	void Render() override 
+	{
+		if (!destroyed) 
+		{
 			GameObject::Render();
 		}
 	}

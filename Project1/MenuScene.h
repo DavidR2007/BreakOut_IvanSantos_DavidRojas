@@ -3,7 +3,8 @@
 #include "Scene.h"
 
 
-class MenuScene : public Scene {
+class MenuScene : public Scene 
+{
 	int pos = 0;
 	int frame = 0;
 
@@ -13,12 +14,11 @@ public:
 		pos = 0;
 		frame = 0;
 	}
-
+// El Logo de breakout se ha hecho con un programa web y implementado en el proyecto por IA
 	virtual void Render() override
 	{
 		system("cls");
 
-		// Logo de Breakout Centrado
 		ConsoleSetColor(CYAN, BLACK);
 		std::cout << "\n\n";
 		std::cout << "      ____  _____  ______ ___   _  __ ____  _   _  _____\n";
@@ -35,24 +35,23 @@ public:
 	{
 		bool exitScene = false;
 		
-		while (!exitScene) {
-			// Para evitar el parpadeo de pantalla constante al hacer cls,
-			// debemos renderizar PRIMERO. Asi la consola dibuja la interfaz y el Sleep la mantiene estatica a la vista.
+		while (!exitScene) 
+		{
 			Render(); 
 			
-			Sleep(150); // Leve aumento del delay para dar tiempo a soltar la tecla
+			Sleep(150); 
 
-			if (GetAsyncKeyState('S'))
+			if (GetAsyncKeyState(VK_DOWN))
 			{
 				pos++;
 				if (pos > 3) pos = 0;
 			}
-			if (GetAsyncKeyState('W'))
+			if (GetAsyncKeyState(VK_UP))
 			{
 				pos--;
 				if (pos < 0) pos = 3;
 			}
-			if (GetAsyncKeyState('E'))
+			if (GetAsyncKeyState(VK_RETURN))
 			{
 				switch (pos)
 				{
@@ -74,28 +73,34 @@ public:
 		}
 	}
 
-	virtual void renderMenu() {
+	virtual void renderMenu() 
+	{
 		ConsoleSetColor(WHITE, BLACK);
-		std::cout << "              Use W / S para mover\n";
-		std::cout << "               Use E para confirmar\n\n\n";
+		std::cout << "         Usa las flechas arriba/abajo para mover\n";
+		std::cout << "            Presiona Enter para seleccionar\n\n\n";
 		
-		if (pos == 0) {
+		if (pos == 0) 
+		{
 			ConsoleSetColor(GREEN, BLACK);
 			std::cout << "                  >> JUGAR <<\n\n";
-		} else {
+		} else 
+		{
 			ConsoleSetColor(WHITE, BLACK);
 			std::cout << "                     Jugar\n\n";
 		}
 
-		if (pos == 1) {
+		if (pos == 1) 
+		{
 			ConsoleSetColor(YELLOW, BLACK);
 			std::cout << "                 >> RANKING <<\n\n";
-		} else {
+		} else 
+		{
 			ConsoleSetColor(WHITE, BLACK);
 			std::cout << "                    Ranking\n\n";
 		}
 
-		if (pos == 2) {
+		if (pos == 2) 
+		{
 			ConsoleSetColor(CYAN, BLACK);
 			std::cout << "                 >> CREDITOS <<\n\n";
 		} else {
@@ -103,14 +108,16 @@ public:
 			std::cout << "                    Creditos\n\n";
 		}
 
-		if (pos == 3) {
+		if (pos == 3) 
+		{
 			ConsoleSetColor(RED, BLACK);
 			std::cout << "                  >> SALIR <<\n\n";
-		} else {
+		} else 
+		{
 			ConsoleSetColor(WHITE, BLACK);
 			std::cout << "                     Salir\n\n";
 		}
 		
-		ConsoleSetColor(WHITE, BLACK); // Resetear color
+		ConsoleSetColor(WHITE, BLACK); 
 	}
 };
